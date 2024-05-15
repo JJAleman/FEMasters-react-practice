@@ -1,0 +1,45 @@
+const fetch = require('node-fetch');
+const fs = require('fs');
+
+async function exportIssues(owner, repo) {
+    try {
+        // Fetch all issues (both open and closed) from the repository
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?state=all`);
+        const issues = await response.json();
+
+        // Format issues data into CSV format
+        const csv = formatIssuesToCSV(issues);
+
+        // Write CSV data to a file
+        fs.writeFileSync('issues.csv', csv);
+
+        console.log('Issues exported successfully to issues.csv');
+    } catch (error) {
+        console.error('Error exporting issues:', error);
+    }
+}
+
+function formatIssuesToCSV(issues) {
+    // Define CSV header
+    const header = ['Issue Number', 'Title', 'State', 'Created At', 'Updated At'];
+    
+    // Format each issue as a CSV row
+    const rows = issues.map(issue => {
+        return [
+            issue.number,
+            `"${issue.title.replace(/"/g, '""')}"`,
+            issue.state,
+            issue.created_at,
+            issue.updated_at
+        ].join(',');
+    });
+
+    // Combine header and rows into a single CSV string
+    return [header.join(','), ...rows].join('\n');
+}
+
+// Example usage
+const owner = 'JJAleman';
+const repo = 'your_repositoryhttps://github.com/JJAleman/FEMasters-react-practice.git';
+
+exportIssues(owner, repo);
