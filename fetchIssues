@@ -40,6 +40,6 @@ function formatIssuesToCSV(issues) {
 
 // Example usage
 const owner = 'JJAleman';
-const repo = 'your_repositoryhttps://github.com/JJAleman/FEMasters-react-practice.git';
+const repo = 'https://github.com/JJAleman/FEMasters-react-practice.git';
 
 exportIssues(owner, repo);
