@@ -1,46 +1,30 @@
-import fetch from 'node-fetch';
-
-const fs = require('fs');
-
 async function exportIssues(owner, repo) {
     try {
-        // Fetch all issues (both open and closed) from the repository
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?state=all`);
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch issues');
+        }
         const issues = await response.json();
-
-        // Format issues data into CSV format
-        const csv = formatIssuesToCSV(issues);
-
-        // Write CSV data to a file
-        fs.writeFileSync('issues.csv', csv);
-
-        console.log('Issues exported successfully to issues.csv');
+        formatAndExportIssues(issues);
     } catch (error) {
         console.error('Error exporting issues:', error);
     }
 }
 
-function formatIssuesToCSV(issues) {
-    // Define CSV header
-    const header = ['Issue Number', 'Title', 'State', 'Created At', 'Updated At'];
-    
-    // Format each issue as a CSV row
-    const rows = issues.map(issue => {
-        return [
-            issue.number,
-            `"${issue.title.replace(/"/g, '""')}"`,
-            issue.state,
-            issue.created_at,
-            issue.updated_at
-        ].join(',');
-    });
-
-    // Combine header and rows into a single CSV string
-    return [header.join(','), ...rows].join('\n');
+function formatAndExportIssues(issues) {
+    try {
+        if (!Array.isArray(issues)) {
+            throw new Error('Issues data is not an array');
+        }
+        // Format issues and export them
+        // ...
+    } catch (error) {
+        console.error('Error formatting issues:', error);
+    }
 }
 
 // Example usage
 const owner = 'JJAleman';
-const repo = 'https://github.com/JJAleman/FEMasters-react-practice.git';
+const repo = 'https://github.com/JJAleman/FEMasters-react-practice.gityour_repository';
 
 exportIssues(owner, repo);
